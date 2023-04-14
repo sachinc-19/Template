@@ -1,0 +1,30 @@
+//******************************Recursive lambda function ************//
+std::function<int(int,int)> sum;
+sum = [term,next,&sum](int a, int b)->int {
+if(a>b)
+    return 0;
+else
+    return term(a) + sum(next(a),b);
+};
+
+*[Obviously, this wouldn't work with auto]*. Recursive lambda functions work perfectly well
+(at least they do in MSVC, where I have experience with them), it's just that they 
+aren't really compatible with type inference.
+
+----------------------------------------------------------------------------
+
+Before C++ 14 there was a way to circumvent this problem by using template parameters,
+
+template<typename T>
+[](T a, T b) -> T { return a + b };
+
+Another variant
+
+C++ 14 does away with this and allows us to use the keyword auto in the input parameters
+of the lambda expression. Thus the compilers can now deduce the type of parameters 
+during compile time. So, in our previous example, a lambda expression that would work 
+for both integer and floating point values would be
+
+[](auto a, auto b) { return a + b; }
+
+----------------------------------------------------------------------------

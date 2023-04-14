@@ -1,0 +1,7 @@
+The expected value (EV) is an anticipated value for an investment at some point in the future. In statistics and 
+probability analysis, the expected value is calculated by multiplying each of the possible outcomes by the likelihood 
+each outcome will occur and then summing all of those values.
+
+EV = ∑ P(Xi) × Xi
+​	 
+​

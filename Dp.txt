@@ -1,0 +1,141 @@
+// using reference to dp[i][j]
+
+#include <bits/stdc++.h>
+#define ll long long int
+#define pb push_back
+#define endl '\n'
+#define Endl '\n'
+#define fi first
+#define ii pair<int,int>
+#define iil pair<ll,ll>
+#define se second
+#define ld long double
+#define mod 0
+#define popcount __builtin_popcountll
+#define x0 zxcxzcsacasd
+#define x1 ghfghujfgfg
+#define y0 olkjhdnncvcv
+#define y1 bhvgrewm345345435
+#define debug(x) std::cerr<<#x<<": "<<(x)<<'\n'
+#define all(x) x.begin(), x.end()
+using namespace std;
+
+int n, m;
+vector<int>a, b;
+int dp[1002][1002];
+int cal(int i, int j){
+	if(i == n || j == m){
+		return (n - i) + (m - j);
+	}
+	int &ret = dp[i][j];
+	if(ret != -1)return ret;
+	ret = 1000000;
+	if(a[i] == b[j])ret = cal(i + 1, j + 1);
+	ret = min(ret, 1 + cal(i + 1, j));
+	ret = min(ret, 1 + cal(i, j + 1));
+	ret = min(ret, 1 + cal(i + 1, j + 1));
+	return ret;
+}
+int main(){
+	cin >> n >> m;
+	a.resize(n);
+	b.resize(m);
+	for(auto &x:a)scanf("%d", &x);
+	for(auto &x:b)scanf("%d", &x);
+	memset(dp, -1, sizeof dp);
+	cout<<cal(0, 0)<<endl;
+}
+
+
+Trying to brute-force all possible sequences exceeds the time limit by far, as there are M 
+N
+  kinds of possible sequences.
+
+Let’s try determining the sequence from the head. Note the following fact:
+
+When we determine the sequence from the head, we only have to remember the sum of elements so far; we can discard the details on what each value has been.
+Due to the fact, the problem can be solved with Dynamic Programming (DP).
+
+The definition of DP
+dp[i][j]:= the number of ways to determine the first i terms of the sequence with the sum j
+
+Since i and j are in the range of 0 between N and 1 between K (inclusive), respectively, there are O(NK) states in total.
+
+The initial value of DP
+First of all, let dp[0][0]=1 and fill the remaining elements with 0.
+
+The transition of DP
+Compute in the increasing order of i. For j=1,…,K−1 and k=1,…,M,
+
+If j+k≤K, add dp[i][j] to dp[i+1][j+k].
+Answer
+Finally, the answer is dp[N][1]+dp[N][2]+…+dp[N][K].
+
+The computational complexity is O(NMK).
+
+Sample code (C++):
+
+Copy
+#include <bits/stdc++.h>
+#include <atcoder/modint>
+using namespace std;
+using mint = atcoder::modint998244353;
+int main() {
+	int n, m, K;
+	cin >> n >> m >> K;
+	vector dp(n + 1, vector(K + 1, mint(0)));
+	dp[0][0] = 1;
+	for(int i = 0; i < n; i++) {
+		for(int j = 0; j < K; j++) {
+			for(int k = 1; k <= m; k++) {
+				if(j + k <= K) dp[i + 1][j + k] += dp[i][j];
+			}
+		}
+	}
+	mint res = 0;
+	for(int i = 1; i <= K; i++) {
+		res += dp.back()[i];
+	}
+	cout << res.val() << endl;
+}
+#include <bits/stdc++.h>
+#include <atcoder/modint>
+
+using namespace std;
+using mint = atcoder::modint998244353;
+
+int main() {
+	int n, m, K;
+	cin >> n >> m >> K;
+
+	vector dp(n + 1, vector(K + 1, mint(0)));
+	dp[0][0] = 1;
+
+	for(int i = 0; i < n; i++) {
+		for(int j = 0; j < K; j++) {
+			for(int k = 1; k <= m; k++) {
+				if(j + k <= K) dp[i + 1][j + k] += dp[i][j];
+			}
+		}
+	}
+
+	mint res = 0;
+	for(int i = 1; i <= K; i++) {
+		res += dp.back()[i];
+	}
+
+	cout << res.val() << endl;
+}
+
+Bonus 1
+Solve it in an O(NK) time. (For intermediate programmers)
+
+The editorial adopts distributing DP; we consider receiving DP instead.
+
+Here, dp[i+1][j] can be expressed by some integersL,R (L≤R) as
+
+dp[i+1][j]=dp[i][L]+…+dp[i][R].
+
+since this is in the form of segment sum, we can precalculate the cumulative sums of dp[i] before updating dp[i+1], so that the transition can be done in an O(1) time.
+
+Therefore, the problem has been solved in a total of O(NK) time. The optimization of DP using cumulative sums are frequently used, so it is worth learning.

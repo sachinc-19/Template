@@ -1,0 +1,34 @@
+std::map functions:
+Extract (and even change key!!!)
+map<int, string> myMap{ { 1, "Gennady" }, { 2, "Petr" }, { 3, "Makoto" } };
+auto node = myMap.extract(2);
+node.key() = 42;
+myMap.insert(move(node));
+
+// myMap: {{1, "Gennady"}, {42, "Petr"}, {3, "Makoto"}};
+Note: Extract is the only way to change a key of a map element without reallocation
+
+Complexity:
+extract(key):  doc
+extract(iterator): O(1) amortized doc
+
+Merge
+map<int, string> m1{ { 1, "aa" }, { 2, "bb" }, { 3, "cc" } }; 
+map<int, string> m2{ { 4, "dd" }, { 5, "ee" }, { 6, "ff" } };
+m1.merge(m2);
+// m1: { {1, "aa"}, {2, "bb"}, {3, "cc"}, {4, "dd"}, {5, "ee"}, {6, "ff"} }
+// m2: {}
+Compexity:  doc
+
+To figure out if the insert or update occurred, we had to first look for the element, and then apply the operator[]. Now we had insert_or_assign:
+map<int, string> m;
+m.emplace(1, "aaa");
+m.emplace(2, "bbb");
+m.emplace(3, "ccc");
+
+auto [it1, inserted1] = m.insert_or_assign(3, "ddd");
+cout << inserted1; // 0
+
+auto [it2, inserted2] = m.insert_or_assign(4, "eee");
+cout << inserted2; // 1
+Complexity:  doc

@@ -1,0 +1,90 @@
+Another Approach 
+Suppose we want to initialize a 2D vector of “n” rows and “m” columns, with a value 0.
+
+// CPP program
+#include <iostream>
+#include <vector>
+using namespace std;
+vector<vector<int>> vis;
+int main()
+{
+	int n = 3;
+	int m = 4;
+	/*
+	We create a 2D vector containing "n"
+	elements each having the value "vector<int> (m, 0)".
+	"vector<int> (m, 0)" means a vector having "m"
+	elements each of value "0".
+	Here these elements are vectors.
+	*/
+	vector<vector<int>> vec( n , vector<int> (m, 0)); 
+    vis.resize(n , vector<int>(m));  // 2d global vector size initialized
+	for(int i = 0; i < n; i++)
+	{
+		for(int j = 0; j < m; j++)
+		{
+			cout << vec[i][j] << " ";
+		}
+		cout<< endl;
+	}
+	
+	return 0;
+}
+
+// sorting vector with second element in decreasing order of element
+
+sort(all(a) , [](vll &a1 , vll &a2) {
+        return a1.size() > a2.size();
+    });
+
+
+//**************************** std::move in C++ *********************************//
+
+OutputIterator move (InputIterator first, InputIterator last, OutputIterator result);
+
+Parameters :
+
+first, last
+Input iterators to the initial and final positions in a sequence
+to be moved. The range used is [first,last], which contains all
+the elements between first and last, including the element pointed
+by first but not the element pointed by last.
+
+result
+Output iterator to the initial position in the destination sequence.
+This shall not point to any element in the range [first,last].
+
+Return type :
+An iterator to the end of the destination range where elements have been moved.
+
+//***********How to convert a Vector to Set in C++
+
+// C++ program to convert
+// a Vector to Set
+
+// Function to convert Vector to Set
+set<int> convertToSet(vector<int> v)
+{
+	// Declaring the set
+	set<int> s;
+
+	// Inserting the elements
+	// of the vector in the set
+	// using copy() method
+	copy(
+
+		// The pointer to the beginning
+		// of the source container
+		v.begin(),
+	
+		// The pointer to the end
+		// of the source container
+		v.end(),
+
+		// Method of copying
+		inserter(s, s.end()));
+
+	// Return the resultant Set
+	return s;
+}
+

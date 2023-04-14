@@ -1,0 +1,108 @@
+If we try to search all combinations of teammates, the number of choices can be at most 4.5 × 10^9
+, so you will get TLE.
+
+Problems of the form of “maximum value of minimum value” can sometimes be solved easily by boiling
+it down to a yes-no problem of “can the answer be more than x?” and do binary search for the answer.
+Now we will consider the yes-no problem.
+
+We are only interested in whether or not each parameter is more than x, so we can compress each 
+parameter to 1 or 0 depending on whether it exceeds x or not. Then, there are at most 2^5 = 32
+ kinds of tuples of parameters, so one can check exhaustively for all possible choices of three members out of the deduplicated members.
+
+The complexity is O((N M + 2MK) log X), where M denotes the number of kinds of parameters, K the 
+number of teammates elected, and X – the upper bound of the binary search.  
+
+                               // CPP
+#include<bits/stdc++.h>
+using namespace std;
+//include <ext/pb_ds/assoc_container.hpp>
+//include <ext/pb_ds/tree_policy.hpp>
+//using namespace __gnu_pbds;
+#define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update>
+#define ll long long int
+#define fon(i,n) for(int i=0;i<n;i++)
+#define fo(i,n) for(int i=1;i<=n;i++)
+#define pb push_back
+#define mp make_pair
+#define eb emplace_back
+#define ff first
+#define ss second
+#define pii pair<int,int>
+#define pll pair<ll ,ll>
+#define vii vector<int>
+#define vll vector<ll>
+#define vvll vector<vll>
+#define vpii vector<pii>
+#define vpll vector<pll>
+#define bs binary_search
+#define lb lower_bound
+#define ub upper_bound
+#define M (1000*1000*1000+7)
+#define test ll T; cin>>T; while(T--)
+#define all(z) z.begin() , z.end()
+#define allr(z) z.rbegin() , z.rend()
+#define memo(oo , zz) memset(oo , zz , sizeof(oo))
+// =============================================
+//1.integer overflow (1e5 * 1e5) (2e9 + 2e9)
+ 
+// this is my first time when i am going to use the lambda function
+
+void solve()
+{
+    int n;
+    cin >> n;
+    vector<vector<int>> A(n , vector<int>(5));
+
+    for(auto &a : A) 
+     for(int &i : a) cin >> i;
+    // lambda function it allows us to write the inline function
+
+    auto possible = [&](int mi) -> bool
+    {
+        unordered_set<int> masks;
+        for(int i = 0 ; i < n; i++)
+        {
+            int mask = 0;
+            for(int j = 0 ; j < 5 ; j++)
+            {
+              if(A[i][j] >= mi)  // then mark this col in mask
+               mask |= (1 << j);
+            }
+            masks.insert(mask);
+        }
+
+        for(auto a : masks)
+        {
+            for(auto b : masks)
+            {
+                for(auto c : masks)
+                {
+                    if((a | b | c) == 31)
+                     return true;
+                }
+            }
+        }
+        return false;
+    };
+
+    int lo = 1 , hi = 1'000'000'001;
+    while(lo+1 < hi)
+    {
+       int mi = lo + (hi - lo)/2;
+       if(possible(mi))
+       {
+           lo = mi;
+       }
+       else
+       {
+           hi = mi;
+       }
+    }
+    cout << lo << endl;  // atleast for one time lo has been set to the valid answer
+}
+int main()
+{
+   ios_base::sync_with_stdio(false);
+   cin.tie(NULL);
+      solve();
+}

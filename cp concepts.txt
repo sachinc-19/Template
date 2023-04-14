@@ -1,0 +1,3 @@
+// aage aane wali negative value ko previously aaye hui positive value se cancel karne ke liye we do
+ cin >> x;
+ans = max(0LL , ans+x);

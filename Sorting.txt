@@ -1,0 +1,8 @@
+ fo(i , n){
+        int x;
+        cin >> x;
+        if(x < a[i]){
+            f = 0;
+        }
+        if(x > a[i]) swap(a[i] , a[x]);
+    }

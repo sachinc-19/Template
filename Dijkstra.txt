@@ -1,0 +1,195 @@
+You have basically two options.
+
+You can change algorithm as you propose. If you have directed graph with no negative cycle, then this is a 
+correct algorithm, but it can be really slow (because you will visit each node many times). I think that 
+there is a case when this algorithm has exponencial time complexity.
+
+You can alter edges costs by using potencials. Every vertex has some potencial h(v) and weight for edge 
+u->v will be w(u,v) + h(u) - h(v). Note that this doesn't affect which path between given two vertices 
+(s, t) is the shortest one only its cost is altered by h(s) - h(t). But you need to calculate potencials.
+Good way of doing that is suggested here:
+
+// A C++ program for Dijkstra's single source shortest path algorithm.
+// The program is for adjacency matrix representation of the graph
+#include <bits/stdc++.h>
+using namespace std;
+#include <limits.h>
+
+// Number of vertices in the graph
+#define V 9
+
+// A utility function to print the constructed distance array
+void printSolution(int dist[])
+{
+	cout <<"Vertex \t Distance from Source" << endl;
+	for (int i = 0; i < V; i++)
+		cout << i << " \t\t"<<dist[i]<< endl;
+}
+
+// Function that implements Dijkstra's single source shortest path algorithm
+// for a graph represented using adjacency matrix representation
+void dijkstra(int graph[V][V], int src)
+{
+	int dist[V]; // The output array. dist[i] will hold the shortest
+	// distance from src to i
+
+	set<pair<int,int>> spT; // sptSet[i] will be true if vertex i is included in shortest
+	// path tree or shortest distance from src to i is finalized
+
+	// Initialize all distances as INFINITE and stpSet[] as false
+	for (int i = 0; i < V; i++)
+		dist[i] = INT_MAX;
+
+	// Distance of source vertex from itself is always 0
+	dist[src] = 0;
+	spT.insert({0 , 0});
+	// Find shortest path for all vertices
+	for (int count = 0; count < V - 1; count++) {
+		// Pick the minimum distance vertex from the set of vertices not
+		// yet processed. u is always equal to src in the first iteration.
+		pair<int,int> u = *spT.begin();
+		spT.erase(spT.begin());
+		// Mark the picked vertex as processed
+		// Update dist value of the adjacent vertices of the picked vertex.
+		for (int v = 0; v < V; v++)
+
+			// Update dist[v] only if is not in sptSet, there is an edge from
+			// u to v, and total weight of path from src to v through u is
+			// smaller than current value of dist[v]
+			if (graph[u.second][v] && u.first + graph[u.second][v] < dist[v])
+			{	
+				if(dist[v] != INT_MAX)
+				{
+					spT.erase(spT.find({dist[v] , v}));
+				}
+				dist[v] = u.first + graph[u.second][v];
+				spT.insert({dist[v] , v});
+			}
+	}
+
+	// print the constructed distance array
+	printSolution(dist);
+}
+
+// driver program to test above function
+int main()
+{
+
+	/* Let us create the example graph discussed above */
+	int graph[V][V] = { { 0, 4, 0, 0, 0, 0, 0, 8, 0 },
+						{ 4, 0, 8, 0, 0, 0, 0, 11, 0 },
+						{ 0, 8, 0, 7, 0, 4, 0, 0, 2 },
+						{ 0, 0, 7, 0, 9, 14, 0, 0, 0 },
+						{ 0, 0, 0, 9, 0, 10, 0, 0, 0 },
+						{ 0, 0, 4, 14, 10, 0, 2, 0, 0 },
+						{ 0, 0, 0, 0, 0, 2, 0, 1, 6 },
+						{ 8, 11, 0, 0, 0, 0, 1, 0, 7 },
+						{ 0, 0, 2, 0, 0, 0, 6, 7, 0 } };
+
+	dijkstra(graph, 0);
+
+	return 0;
+}
+
+// This code is contributed by shivanisinghss2110
+
+Comment Ex- negative edges are ok, but not negative cycles. And there are no negative cycles as this would be 
+physically impossible
+
+Reply CM- Why are negative edges ok but not negative cycles? Doesn't dijkstra work because before processing 
+vertex v, we have already processed all vertices with distance smaller that distance to v, and negative edges 
+would break this
+
+// SSSP DIJKSTRA
+vector<ll> dijkstra(int start, vector<vector<pii>> &AL){ // O(E * log(V))
+    // Instead of PQ use a set to update nodes once you see a lower value. The complexity lower but in Big O still the same
+    // DOES NOT WORK WITH NEGATIVE WEIGHT CYCLES
+    ll n = AL.size();
+    vector<ll> dist(AL.size(), INF);
+    dist[start] = 0;
+    set<pll> pq;
+    pq.emplace(dist[start], start);
+    while(pq.size()){
+        auto [cost, cur] = *pq.begin(); // intotal O(V * log(V))
+        pq.erase(pq.begin());
+        for(auto [next, w]: AL[cur]){
+            if(dist[cur] + w >= dist[next]) continue;
+            auto it = pq.find({dist[next], next});
+            if(it != pq.end()){
+                pq.erase(it); // O(E * log(V));
+            }
+            dist[next] = dist[cur] + w;
+            pq.emplace(dist[next], next);
+
+        }
+    }
+    return dist;
+}
+
+/*********************************ABC 237 E ****************************/
+int n , m;
+list<pii> *adjList;
+
+void addEdge(int source, int dest, int cost) {
+   pii p;
+   p.ff = dest;
+   p.ss = cost;
+   adjList[source].push_back(p);
+}
+
+void dijkstra(int *dist, int start) {
+   priority_queue<pii, vector <pii> , greater<pii> > Q;
+   for(int u = 0 ; u < n ; u++) {
+      dist[u] = 1e17;  
+   }
+   dist[start] = 0;   
+   Q.push({0 , start});
+
+   list<pii> :: iterator it;
+   while(!Q.empty()) {
+      pii p = Q.top();
+      Q.pop();
+      if(p.ff > dist[p.ss]) continue;
+      int u = p.ss;
+      for(it = adjList[u].begin(); it != adjList[u].end();it++) {
+         if((dist[u]+(it->ss)) < dist[it->ff]) { 
+            dist[it->ff] = (dist[u]+(it->ss));
+            Q.push(make_pair(dist[it->ff], it->ff));
+         }
+      }
+   }
+}
+
+main() {
+   cin >> n >> m;
+
+   vector<int> h(n+1);
+   adjList = new list<pii>[n];
+   for(int i = 0 ; i < n ; i++) cin >> h[i];
+
+   int dist[n];
+   int start = 0;
+
+   for(int i = 0 ; i < m ; i++) {
+       int u , v , w1 = 0 , w2 = 0;
+       cin >> u >> v;
+       u-- , v--;
+       if(h[u] > h[v]) {
+           w1 = h[u] - h[v];
+           w2 = 2*(h[v] - h[u]);
+       }
+       else if(h[u] < h[v]) {
+           w1 = 2*(h[u] - h[v]);
+           w2 = h[v] - h[u];
+       }
+       addEdge(u , v , -w1);
+       addEdge(v , u , -w2);
+   }
+   dijkstra(dist, start);
+   int ans = 1e18;
+   for(int i = 0 ; i < n; i++)
+   {
+      ans = min(ans , dist[i]);
+   }
+   cout << abs(ans) << endl;
+}

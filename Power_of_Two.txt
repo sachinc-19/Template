@@ -1,0 +1,101 @@
+// ******************** Smallest power of 2 greater than or equal to n ***********
+
+Method 1(Using Log of the number) 
+    1.  Calculate Position of set bit in p(next power of 2):
+        pos =  ceil(lgn)  (ceiling of log n with base 2)
+    2.  Now calculate p:
+        p   = pow(2, pos) 
+
+>>>>>> O(log(n)) 
+Method 2 (By getting the position of only set bit in result ) 
+// CODE 
+unsigned int nextPowerOf2(unsigned int n)
+{
+    unsigned count = 0;
+     
+    // First n in the below condition
+    // is for the case where n is 0
+    if (n && !(n & (n - 1)))
+        return n;
+     
+    while( n != 0)
+    {
+        n >>= 1;  // Right Shift
+        count += 1;
+    }
+     
+    return 1 << count;
+}
+
+Method 3(Shift result one by one) 
+
+unsigned int nextPowerOf2(unsigned int n)
+{
+    unsigned int p = 1;
+    if (n && !(n & (n - 1)))
+        return n;
+ 
+    while (p < n)
+        p <<= 1;
+     
+    return p;
+}
+
+Method 4(Customized and Fast) 
+unsigned int nextPowerOf2(unsigned int n) 
+{
+    n--;
+    n |= n >> 1;
+    n |= n >> 2;
+    n |= n >> 4;
+    n |= n >> 8;
+    n |= n >> 16;
+    n++;
+    return n;
+}
+
+ //  ****************** find MSB of a number *****************************
+ ====== O(logn)
+int setBitNumber(int n)
+{
+	if (n == 0)
+		return 0;
+	int msb = 0;
+	n = n / 2;
+	while (n != 0) {
+		n = n / 2;
+		msb++;
+	}
+	return (1 << msb);
+}
+
+======O(1)
+int setBitNumber(int n)
+{
+	int k = (int)(log2(n));
+	return 1 << k;
+}
+
+=====O(1) only 32 bit number
+int setBitNumber(int n)
+{
+	n |= n >> 1;
+	n |= n >> 2;
+	n |= n >> 4;
+	n |= n >> 8;
+	n |= n >> 16;
+	n = n + 1;
+	return (n >> 1);
+}
+
+
+*********************** // no is power of two //******************************
+
+// Function to check if x is power of 2
+bool isPowerOfTwo(int n)
+{
+   if(n==0)
+   return false;
+ 
+   return (ceil(log2(n)) == floor(log2(n)));
+}

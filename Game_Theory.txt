@@ -1,0 +1,25 @@
+// sachinc  Game Theory [Competitive Programming]  
+// is not that often asked, but usually problems do come up revolving around the topic in short contests with a mixture of 
+other topics like range querying or greedy or dynammic programming.
+
+// at each step he already knows the possible outcome after taking each decision => so they are going to take the decisons vey
+carefully 
+// 22 nov 2020 I have came with a very intresting problem on codeforces having rating 1100 (Tag => game theory , dp)but learned
+a lot from it 
+If two players are playing a game then the winning strategy will the optimal one which gives the victory
+at any step if there are two choices then he will win surely as he already knows the possible outcome after each move(decision)
+
+
+Lets start with a simple problem.
+Note: It is assumed in all problems, the characters play optimally (play to win).
+Problem Statement:
+Two players Alice (A) and Bob (B) are playing a game. The game consists of a pile of stones of size N. The game always begins with Alice making a move. A move means to either remove 1 stone or 2 stones from pile, and each person makes a move alternatively. The person to make the last move wins i.e. the person left with no stones to pick loses. [Recommend you to think about it yourself before moving ahead.]
+Solution:
+Lets try to analyze the problem from base cases.
+For N=1, A wins the game directly as A can directly pick up a stone, and B is left with none.
+For N=2, A wins the game again (same reason as above).
+For N=3, B wins the game disregard of whatever A moves.
+For N=4, A wins the game again. A can pick up 1 stone and no matter what B does then, A can win.
+Similary, when you write it for a few more Ns, you will realize that for multiples of 3, A will lose and in other cases A will win.
+Hence, it can be deduced that the winning strategy is simply to bring down the opponent on a multiple of 3, cause for every non-multiple of 3, if you are at, you can reach a multiple of 3 (by removing one or two stones), and therefore you end up bringing the opponent at 3 stones, thereby winning the game. And if a player is already with multiple of 3 stones, he cannot bring other to a multiple of 3 state.
+Therefore Multiple of 3 will be called a losing state and Non multiple of 3 will be called a winning state for the player about to move.

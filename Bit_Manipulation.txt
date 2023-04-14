@@ -1,0 +1,185 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define fon(i,n) for(int i=0;i<n;i++)
+#define fo(i,n) for(int i=1;i<=n;i++)
+#define pb push_back
+#define mp make_pair
+#define ff first
+#define ss second
+#define pii pair<int,int>
+#define pll pair<ll ,ll>
+#define vii vector<int>
+#define vll vector<ll>
+#define vvll vector<vll>
+#define vpii vector<pii>
+#define vpll vector<pll>
+#define bs binary_search
+#define lb lower_bound
+#define ub upper_bound
+#define M (1000*1000*1000+7)
+#define test ll T; cin>>T; while(T--)
+#define all(z) z.begin() , z.end()
+#define allr(z) z.rbegin() , z.rend()
+#define setbits(x)      __builtin_popcountll(x)
+// =============================================
+const int MAXN = 100010;
+ll a[MAXN] , n , dp[100];
+
+void process(ll s)
+{
+    for(ll i = 0 ; (1<<i)<=s ; i++)
+    {
+        dp[i] = 0;
+        for(ll j = 0 ; j < n ; j++)
+        {
+           if(a[j] & (1<<i)) dp[i]++;
+        }
+        if(i>0) dp[i] += dp[i-1]/2;
+    }
+}
+int main()
+{
+   ios_base::sync_with_stdio(false);
+   cin.tie(NULL);
+   test
+   {
+       cin >> n;
+       fon(i , n) cin >> a[i];
+       ll sum = 0;
+       fon(i , n) sum+=a[i];
+       
+       process(sum);
+       ll ans = 0;
+
+       for(ll i = 0 ; (1<<i)<=sum ; i++)
+       {
+           if(dp[i]) ans += (1<<i);
+       }
+       cout << ans << endl;
+   }
+}
+
+// **********Method 1 (Using Log)  
+// C program to find total bit in given number 	 
+#include <math.h> 
+
+unsigned int countBits(unsigned int num)    
+{	 
+	// log function in base 2 
+	// take only integer part 
+	return (int)log2(num)+1; 
+} 
+// num = 65 => 7
+
+//****** Method 2 (Using Bit Traversal)
+/* Function to get no of bits in binary 
+representation of positive integer */	 
+	
+unsigned int countBits(unsigned int n) 
+{ 
+   unsigned int count = 0; 
+    while (n) 
+    { 
+		count++; 
+		n >>= 1; 
+	} 
+	return count; 
+} 
+
+// Count set bits in an integer  //******  #define setbits(x)      __builtin_popcountll(x)
+
+/* Function to get no of set bits in binary 
+representation of positive integer n */
+unsigned int countSetBits(unsigned int n) 
+{ 
+    unsigned int count = 0; 
+    while (n) { 
+        count += n & 1; 
+        n >>= 1; 
+    } 
+    return count; 
+} 
+
+// n = 9 => 2 (ans)  Time Complexity: (-)(logn) (Theta of logn)
+
+2. Brian Kernighan’s Algorithm:
+Subtracting 1 from a decimal number flips all the bits after the rightmost set bit(which is 1) including the rightmost set bit.
+for example :
+10 in binary is 00001010
+9 in binary is 00001001
+8 in binary is 00001000
+7 in binary is 00000111
+So if we subtract a number by 1 and do bitwise & with itself (n & (n-1)), we unset the rightmost set bit. If we do n & (n-1) in a loop and count the no of times loop executes we get the set bit count.
+The beauty of this solution is the number of times it loops is equal to the number of set bits in a given integer.
+
+// C++ program to Count set 
+// bits in an integer 
+#include <iostream> 
+using namespace std; 
+class gfg { 
+	/* Function to get no of set bits in binary 
+representation of passed binary no. */
+public: 
+	unsigned int countSetBits(int n) 
+	{ 
+		unsigned int count = 0; 
+		while (n) { 
+			n &= (n - 1); 
+			count++; 
+		} 
+		return count; 
+	} 
+}; 
+/* Program to test function countSetBits */
+int main() 
+{ 
+	gfg g; 
+	int i = 9; 
+	cout << g.countSetBits(i); 
+	return 0; 
+} 
+Time Complexity: O(logn)
+
+
+//***************** Program to find whether a no is power of two ***************//
+(1)
+bool isPowerOfTwo(int n)
+{
+   if(n==0)
+   return false;
+ 
+   return (ceil(log2(n)) == floor(log2(n))); 
+}  
+
+   // duplicate
+(2)
+   while (n != 1) 
+    { 
+     if (n%2 != 0) 
+      return 0; 
+      n = n<<1; 
+     }                                        
+      return 1;
+
+(3)  recursion
+4. All power of two numbers has only a one-bit set. So count the no. of set bits and if you get 1 then the number 
+is a power of 2. Please see Count set bits in an integer for counting set bits.
+
+5. If we subtract a power of 2 numbers by 1 then all unset bits after the only set bit become set; and the set bit 
+becomes unset.
+For example for 4 ( 100) and 16(10000), we get the following after subtracting 1 
+3 –> 011 
+15 –> 01111
+
+So, if a number n is a power of 2 then bitwise & of n and n-1 will be zero. We can say n is a power of 2 or not based 
+on the value of n&(n-1). The expression n&(n-1) will not work when n is 0. To handle this case also, our expression 
+will become n& (!n&(n-1))
+
+/* Function to check if x is power of 2*/
+bool isPowerOfTwo (int x) 
+{ 
+    /* First x in the below expression is for the case when x is 0 */
+    return x && (!(x&(x-1))); 
+} 
+

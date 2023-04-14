@@ -1,0 +1,61 @@
+
+int main{ 
+    int o=RAND_MAX;
+    std::map<int,int> m1;
+    int min=0,max=999;
+
+    for (int i=0; i<1000*9994240; ++i){//9994240=305*32768  32768=RAND_MAX+1
+        int r=rand();
+        if(r<=max){
+            m1[r]++;
+        }
+    }
+    for (auto & i : m1)
+        std::cout << i.first << " : " << i.second << '\n';
+}
+
+std::uniform_int_distribution class in C++
+you can achieve desired result on any domain this way:
+
+#include <iostream>
+#include <random>
+
+int main()
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, 1000);
+
+    for (int n=0; n<1000; ++n)
+        std::cout << dis(gen) << ' ';
+    std::cout << '\n';
+}
+
+
+
+however you should really use boost in this case:
+
+#include <iostream>
+#include "boost/random.hpp"
+#include "boost/generator_iterator.hpp"
+using namespace std;
+
+int main() {
+      typedef boost::mt19937 RNGType;
+      RNGType rng;
+      boost::uniform_int<> zero_to_n( 0, 999 );
+      boost::variate_generator< RNGType, boost::uniform_int<> >
+                    dice(rng, zero_to_n);
+          int n  = dice();
+
+}
+
+
+
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+ 
+int randNo(int lo, int hi)
+{
+	hi++;
+	return lo + rng() % (hi - lo);
+}

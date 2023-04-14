@@ -1,0 +1,57 @@
+vector<int> nearest_greater_element(vii a) {
+    vii ng(n+1);
+    stack<int> st;
+
+    for(int i = n ; i > 0 ; i--) {
+        while(!st.empty() && a[st.top()] <= a[i]) {
+            st.pop();
+        }
+        if(st.empty()) {
+            ng[i] = n+1;
+        }
+        else {
+            ng[i] = st.top();
+        }
+        st.push(i);
+    }
+}  
+
+vector<int> nearest_smaller_right(vii a) {
+    int n = sz(a);
+    vii nsr(n);
+    stack<int> st;
+
+    for(int i = n-1 ; i >= 0 ; i--) {
+        while(!st.empty() && a[st.top()] >= a[i]) {
+            st.pop();
+        }
+        if(st.empty()) {
+            nsr[i] = n;
+        }
+        else {
+            nsr[i] = st.top();
+        }
+        st.push(i);
+    }
+    return nsr;
+}   
+
+vector<int> nearest_smaller_left(vii a) {
+    int n = sz(a);
+    vii nsl(n);
+    stack<int> st;
+
+    for(int i = 0 ; i < n ; i++) {
+        while(!st.empty() && a[st.top()] >= a[i]) {
+            st.pop();
+        }
+        if(st.empty()) {
+            nsl[i] = -1;
+        }
+        else {
+            nsl[i] = st.top();
+        }
+        st.push(i);
+    }
+    return nsl;
+}    

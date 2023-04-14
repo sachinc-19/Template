@@ -1,0 +1,13 @@
+//    abdabe    sequence to be matched 
+//    abdabbabd   matching sequence  iterator i
+//    00012       prefix array for j 
+vector<int> p(n);
+	for (int i = 1; i < sz(t); ++i) {
+		int j = p[i - 1];
+		while (j > 0 && t[j] != t[i])
+			j = p[j - 1];
+		if (t[i] == t[j])
+			++j;
+		p[i] = j;
+	    debug(p);
+	}

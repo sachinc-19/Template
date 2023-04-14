@@ -1,0 +1,305 @@
+************************// Upper bound for number of divisors //******************
+As far as I remember, it's O(n^epsilon) ep. But you can use O(n^1/3)  in practice.
+Regarding the number of divisors, a useful thing for programming contests is to 
+search OEIS for "1344 maximal divisors", or just memorize the sequence numbers 
+for the maximal number of divisors and also the smallest and largest n-digit 
+integers that have the appropriate number of divisors. The two latter sequences 
+are sometimes useful in test cases.
+
+The number is 1344 for integers up to 10^9 and 103680 for integers up to 10^18.
+
+bool s_prime(int n) 
+{ 
+    if(n<=1)  return false; 
+    if(n<=3)  return true; 
+    if(n%2==0||n%3==0) return false; 
+    for(int i=5; i*i<=n; i=i+6) 
+    if (n%i == 0 || n%(i+2) == 0) 
+    return false; 
+    return true; 
+}
+
+*********************************// SIEVE //**************************
+bool prime[100001];
+
+void get_prime(int n)
+{
+    fill(prime , prime+n , 1);
+    prime[0] = prime[1] = 0;
+
+    for(int i = 2 ; i*i <= n ; i++)
+    {
+        if(prime[i])
+        for(int j = i*i ; j <= n; j += i)
+        {
+            prime[j] = 0;
+        }
+    } 
+}
+
+***************************// PRIME FACTORISATION //************************************
+vector<int> pfctz(int n)
+{
+    vector<int> pfactors;
+    for(int i = 2 ; i*i <= n ; i++)
+    {
+        if(n%i==0)
+        {
+            pfactors.emplace_back(i);
+            while(n%i==0)
+              n /= i;
+        }
+    }
+    if(n > 1) pfactors.emplace_back(n);
+    return pfactors;
+}
+
+***************************// Linear Diophantine Equation //*****************************
+
+// store x, y, and d as global variables
+void extendedEuclid(int a, int b) {
+    if (b == 0) { x = 1; y = 0; d = a; return; }                     // base case
+    extendedEuclid(b, a % b);                      // similar as the original gcd
+    int x1 = y;
+    int y1 = x - (a / b) * y;
+    x = x1;
+    y = y1;
+}
+
+******************************// DIVISORS OF FACTORIAL //************************
+
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define fon(i,n) for(int i=0;i<n;i++)
+#define fo(i,n) for(int i=1;i<=n;i++)
+#define pb push_back
+#define mp make_pair
+#define ff first
+#define ss second
+#define pii pair<int,int>
+#define pll pair<ll ,ll>
+#define vii vector<int>
+#define vll vector<ll>
+#define vvll vector<vll>
+#define vpii vector<pii>
+#define vpll vector<pll>
+#define bs binary_search
+#define lb lower_bound
+#define ub upper_bound
+#define M (1000*1000*1000+7)
+#define test ll T; cin>>T; while(T--)
+#define all(z) z.begin() , z.end()
+#define allr(z) z.rbegin() , z.rend()
+// =============================================
+
+const int MAXN = 50005;
+bool prime[MAXN];
+
+ll mod(ll x){
+    return ((x % M + M) % M);}
+
+ll add(ll a , ll b){
+    return mod(mod(a) + mod(b));}
+
+ll mul(ll a , ll b){
+    return mod(mod(a) * mod(b));}
+
+ll lcm(ll a , ll b){
+    return (a*b)/__gcd(a , b);}
+
+void get_prime()
+{
+    memset(prime , true , sizeof(prime));
+
+    prime[0] = prime[1] = false;
+
+    for(int i = 2 ; i*i <= MAXN ; i++)
+    {
+        if(prime[i])
+        for(int j = i*i ; j <= MAXN ; j += i)
+        {
+            prime[j] = false;
+        }
+    } 
+}
+
+int main()
+{
+   ios_base::sync_with_stdio(false);
+   cin.tie(NULL);
+
+   get_prime();
+   test
+   {
+      ll n;
+      cin >> n;
+      ll ans = 1;
+
+      for(int i = 2 ; i<= n ;i++)
+      {
+          ll a = 1 ;
+          if(prime[i])
+          {
+              ll p = i;
+              while(p <= n)
+              {
+                  a += n/p;
+                  p *= i;
+              } 
+              ans = mul(ans , a);
+          }
+      }
+      cout << ans << endl;
+   }
+}
+
+*****************// LCM SUM //
+****************************// INT TO BINARY //****************************
+
+template<typename T>
+std::string toBinary(T n)
+{
+    std::string r;
+    while(n!=0) {r=(n%2==0 ?"0":"1")+r; n/=2;}
+    return r;
+}
+
+*****//  modern variant that can be used for ints of different sizes //*******************
+
+template<typename T>
+std::enable_if_t<std::is_integral_v<T>,std::string>
+encode_binary(T i){
+    return std::bitset<sizeof(T) * 8>(i).to_string();
+}
+
+******// C++ Program to print prime factors and their powers using Sieve Of Eratosthenes //**********************
+ 
+#include<bits/stdc++.h> 
+using namespace std; 
+
+// Using SieveOfEratosthenes to find smallest prime 
+// factor of all the numbers. 
+// For example, if N is 10, 
+// s[2] = s[4] = s[6] = s[10] = 2 
+// s[3] = s[9] = 3 
+// s[5] = 5 
+// s[7] = 7 
+void sieveOfEratosthenes(int N, int s[]) 
+{ 
+	// Create a boolean array "prime[0..n]" and 
+	// initialize all entries in it as false. 
+	vector <bool> prime(N+1, false); 
+
+	// Initializing smallest factor equal to 2 
+	// for all the even numbers 
+	for (int i=2; i<=N; i+=2) 
+		s[i] = 2; 
+
+	// For odd numbers less then equal to n 
+	for (int i=3; i<=N; i+=2) 
+	{ 
+		if (prime[i] == false) 
+		{ 
+			// s(i) for a prime is the number itself 
+			s[i] = i; 
+
+			// For all multiples of current prime number 
+			for (int j=i; j*i<=N; j+=2) 
+			{ 
+				if (prime[i*j] == false) 
+				{ 
+					prime[i*j] = true; 
+
+					// i is the smallest prime factor for 
+					// number "i*j". 
+					s[i*j] = i; 
+				} 
+			} 
+		} 
+	} 
+} 
+
+// Function to generate prime factors and its power 
+void generatePrimeFactors(int N) 
+{ 
+	// s[i] is going to store smallest prime factor 
+	// of i. 
+	int s[N+1]; 
+
+	// Filling values in s[] using sieve 
+	sieveOfEratosthenes(N, s); 
+
+	printf("Factor Power\n"); 
+
+	int curr = s[N]; // Current prime factor of N 
+	int cnt = 1; // Power of current prime factor 
+
+	// Printing prime factors and their powers 
+	while (N > 1) 
+	{ 
+		N /= s[N]; 
+
+		// N is now N/s[N]. If new N als has smallest 
+		// prime factor as curr, increment power 
+		if (curr == s[N]) 
+		{ 
+			cnt++; 
+			continue; 
+		} 
+
+		printf("%d\t%d\n", curr, cnt); 
+
+		// Update current prime factor as s[N] and 
+		// initializing count as 1. 
+		curr = s[N]; 
+		cnt = 1; 
+	} 
+} 
+
+//Driver Program 
+int main() 
+{ 
+	int N = 360; 
+	generatePrimeFactors(N); 
+	return 0; 
+} 
+
+
+Short Solution: The two integers are k and n−k, where k is the largest proper factor of n.
+
+Proof: Let the two integers be k and n−k. Assume WLOG that k≤n−k. Notice that this implies that n−k≥n2.
+
+We first claim that LCM(k,n−k)=n−k<n if k∣n, and we prove this as follows: if k∣n, then there exists some integer m such 
+that m⋅k=n. The integer n−k can then be written as (m−1)⋅k, which is a multiple of k. Thus, LCM(k,n−k)=n−k if k∣n.
+
+We now show that LCM(k,n−k)≥n if k∤n. We show this by using the fact that LCM(a,b)=b iff a∣b, so if k∤n, k∤n−k, and so 
+LCM(k,n−k)≠n−k. And since LCM(k,n−k) must be a multiple of both k and n−k, it follows that LCM(k,n−k)≥2⋅(n−k)≥2⋅n2=n.
+
+We have now established that to minimize LCM(k,n−k), k must be a factor of n. And, since LCM(k,n−k)=n−k when k is a 
+factor of n, we need to minimize n−k, so we must maximize k by choosing it to be the largest proper factor of n (i. e. the largest factor of n other than n).
+
+We then simply need to find k, the largest proper factor of n. If p is the smallest prime dividing n, then k=np, so 
+it suffices to find the smallest prime factor of n. We can do this by simply checking all values of p such that 2≤p≤n−−√. 
+If n is not prime, then it must have a prime factor not exceeding n−−√. Furthermore, if we do not find a factor of n 
+between 2 and n−−√, then n must be prime so we simply get p=n and k=np=1.
+
+We're given that n≤109, so n−−√≤1092<105. t≤10, meaning that we will check less than 106 numbers, which runs well 
+under the time limit.
+
+If the number x has an odd divisor, then it has an odd prime divisor. To understand 
+this fact, we can consider what happens when multiplying even and odd numbers:
+even ∗ even = even;
+even ∗ odd = even;
+odd ∗ even = even;
+odd ∗ odd = odd.
+
+a + b = (a | b) + (a & b)
+
+Great round. For D, if x and y have no common bits then answer is NO else YES. So this will also work
+
+if(x & y) cout << "Yes";
+else cout << "No";
+
+(a|b) == (a^b) == (a+b) = no common bit in them 
+(a&b) == 0

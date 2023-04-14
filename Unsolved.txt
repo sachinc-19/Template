@@ -1,0 +1,23 @@
+//**************** Segment tree GCD — Range Update & Range Query ***********//
+
+Today I realized that I cannot implement GCD segment tree with range update & range query, the same way I did for min/max/sum segtree with range update & range query. Now I wonder is it possible to write this kind of segment tree with O(logN) complexity for each operation? Operations:
+
+Add some number x to range [l, r]
+Find GCD of range [l, r]
+P.S. not to be confused with:
+
+Initialize each number in range [l, r] to x
+Find GCD of range [l, r]
+
+Store two segment trees: one for adding some number to range and taking value of element (usual segment tree
+with lazy propagation) and one based on differences of adjacent elements. When you add a number to the range, 
+only two values in second segment tree change, so you can easily recalculate values in second tree.
+
+Now use the property that gcd(al, al + 1, ..., ar) = gcd(al, al + 1 - al, al + 2 - al + 1, ..., ar - ar - 1).
+
+So basically what we are doing is that we are doing the change operations on 1st segment tree lazily and then 
+querying the first and last element of the range needed. we use this with the middle values from segment tree 
+of consecutive difference which never changes for the given update property. Very nice approach, building a 
+segment tree that doesn't depend on the update at all!!
+
+<<-------------------------------------------------------------------------------->>

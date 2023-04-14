@@ -1,0 +1,13 @@
+ // max sum subarray of length k
+ 
+    for(int i = 0 ; i < k ; i++)
+       s += a[i];
+
+      ans = s;
+     for(int i = k ; i < n ;i++)
+     {
+         s += (a[i] - a[i-k]);
+         ans = max(ans , s);
+     }
+
+     cout << ans << endl;

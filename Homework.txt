@@ -1,0 +1,21 @@
+I also came up with the same solution, But my solution involved up to 6 triangular 
+numbers at max. But I couldn't figure out what should be an optimal choice of Xi 
+between each segment of 7. Since the maximum length of the answer using these triangular 
+numbers is of the order of O(n1/2), so after every segment of 7s, I found the optimal digit
+ using brute force. I wasn't completely sure, whether this is absolutely correct. But this 
+ passed all the test cases. :)
+
+
+ I found an even more constructive solution for Problem C than the editorial.
+
+We can use that every number can be written as the sum of three triangular numbers. Triangular numbers
+ are numbers of form n⋅(n+1)/2. Then we can construct a number in the form of Δ1X1Δ2X2Δ3 with Δi being
+  as many 7s as the i-th triangular numbers order. But what do we write for the delimiters X1 and X2? 
+  Using the −2,−3,−1,2,3,1-divisibility rule for seven we can find the difference in positions of X1 
+  and X2. If it is three, we take X1=1, X2=2. Else we take X1=1, X2=1.
+
+So my answers will always be in the form of 77...77177...77177..77 or 77...77177...77277..77. See 
+also https://atcoder.jp/contests/arc129/submissions/27432100 .
+
+The three triangular numbers can be found easily in O(n3/2) by iterating all three triangular 
+numbers. This can be improved to O(n) if we only iterate the first 2 triangular numbers and then calculate the third.

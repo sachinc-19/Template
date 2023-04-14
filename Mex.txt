@@ -1,0 +1,32 @@
+I saw all the other comments almost cover the approaches, although I'd like to share one of the approaches I use most frequently. The approach takes O(NlogN) precomputation, but each MEX query takes O(1) time and updates the MEX of an array in O(logN) for every point update in the array.
+In C++ :-
+Precomputation:
+- Create a set and a frequency map(or array).
+- Fill the set with all numbers from 0 to n+1.
+- Now, traverse in the array, if the element is within [0, n+1] remove it from the set, and keep updating the frequency map(or array). It takes at worst O(NlogN) time.
+- Now, for any state, the set.begin() will give the MEX of the current array.
+For updates:
+- If the element to be replaced, is within [0, n+1] then update its frequency in the frequency map(or array) and if after updating, the frequency of that element becomes zero, insert it into our set. It takes O(logN) time.
+- Now if the element which is placed in that position is within [0, n+1] then update its frequency in the frequency map(or array) and remove it from our set(if its present). It takes O(logN) time.
+- And yet again, after any update, set.begin() will give us the current MEX in O(1).
+
+A sample code where I used this technique to find MEX in queries : 86004255 :)
+
+
+<----------------- 2 ----------------------->
+--------------------------------------------------------------------------------------------------------
+
+1. go through the array and remove elements from it that are greater than N
+2. we use sorting for O (N) + unique O(N)
+3. we go through the sequence in the line and look at the first one that does not correspond to the number in the array
+Example: n = 9, 0 3 5 7 2 4 1 10 19
+
+1. delete (>= n) 0 3 5 7 2 4 1
+
+2. sorting 0 1 2 3 4 5 7
+
+3. analysis of 0-index
+
+0 in 0 position, 1 in 1 position ... 5 in 5 position, 7 in 6 position
+
+then the answer is 6

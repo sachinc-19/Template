@@ -1,0 +1,197 @@
+#include<algorithm>
+
+memset assigns initial values ​​to infinity and infinity
+If the range of each data in the question is clear, then the setting of infinity is not a problem. In 
+the case of not clear, many programmers take 0x7fffffff as infinity, because this is the maximum 
+value of 32-bit int. If this infinity is only used for general comparisons (such as the initial value of 
+the min variable when seeking the minimum value), then 0x7fffffff is indeed a perfect choice,
+ but in more cases, 0x7fffffff is not a good choice.
+
+In many cases, we do n’t just compare infinity, but compare after calculation. For example, the 
+slack operation used in most shortest path algorithms: 
+if (d[u]+w[u][v] < d[v]) d[v]=d[u]+w[u][v]; 
+We know that if there is no edge between u and v, then w [u] [v] = INF, if our INF Take 0x7fffffff, 
+then d [u] + w [u] [v] will overflow and become a negative number, our relaxation operation will be 
+wrong, more generally, 0x7fffffff cannot satisfy "infinite plus a finite number is still infinite ", It 
+became a very small negative number. 
+In addition to satisfying that adding a constant is still infinity, our constant should also satisfy 
+"infinity plus infinity is still infinity", at least two infinity should not add catastrophic errors, 
+0x7fffffff still cannot satisfy us . 
+So we need a better guy to replace 0x7fffffff. The most rigorous way is of course to deal with 
+infinity specially instead of finding a very large constant to replace it (or to simulate it), but this 
+will make our programming The process becomes very troublesome. In the code I have read, the 
+most elaborate infinity constant value is 0x3f3f3f3f. I do n’t know who first used this exquisite 
+constant to do infinity, but I did from an unknown ACMer (ID: Staginner ) 'S blog learned that this 
+constant is used in many of his/her code, so I also tried it myself and found it very easy to use
+, and when I did a more in-depth analysis of this constant, I found that it is really Is very delicate.
+
+The decimal value of 0x3f3f3f3f is 1061109567, that is, 10 ^ 9 (and an order of magnitude of 
+0x7fffffff), and the data in the general case is less than 10 ^ 9, so it can be used as infinity 
+without causing the data to be greater than infinity. 
+On the other hand, since the general data will not be greater than 10 ^ 9, when we add infinity to 
+a data, it will not overflow (this satisfies "infinity plus a finite number is still infinity") In fact, 
+0x3f3f3f3f + 0x3f3f3f3f = 2122219134, which is very large but does not exceed the 32-bit int 
+representation range, so 0x3f3f3f3f also meets our needs of "infinity plus infinity or infinity". 
+Finally, 0x3f3f3f3f can bring us an unexpected additional benefit: if we want to clear an array, we 
+usually use code like memset (a, 0, sizeof (a)) to achieve (convenient and Efficient), but when we 
+want to assign all arrays to infinity (such as the initialization of the adjacency matrix when 
+solving graph theory problems), we cannot use the memset function and have to write the loop 
+ourselves (writing these unimportant codes is really very good Painful), we know that this is 
+because memset operates on bytes, and it can clear the array because every byte of 0 is 0, now 
+it ’s ok, if we set the infinity to 0x3f3f3f3f, then a miracle happens By the way, every byte of 
+0x3f3f3f3f is 0x3f! So to set all memory to infinity, we only need memset (a, 0x3f, sizeof (a)). 
+So under normal circumstances, 0x3f3f3f3f is really a great choice.
+
+Other assignments: memset (arr, 0x7F, sizeof (arr));//It assigns all the values ​​in arr to 
+2139620143 0x80, sizeof (arr));//set int to -2139062144 memset (arr, 0x7F, sizeof (arr));//set 
+double to 1.38242e + 306 memset (arr, 0xFE, sizeof (arr));//set double to -5.31401e + 303
+
+ll size = 2;
+ll *arr = new ll[size];
+memset(arr,0,sizeof(arr));
+When I tried to run this.
+
+I see the values of arr as 4294967296 420906795007 instead of 0 0
+
+How does memset work?
+----------------------><---------------------------------><---------------------------
+
+[Answer] **************************************
+
+sizeof(arr) will give the size of a pointer, not the allocated memory.
+
+Try this to calculate the size to zero-clear:
+
+ll size = 2;
+ll *arr = new ll[size];
+memset(arr,0,sizeof(*arr) * size);
+
+-------------------------------------------------------------------------------
+// **************** Function to remove all occurences of C from the string S ************//
+string removeCharacters(string S, char c)
+{
+	S.erase(remove(S.begin(), S.end(), c), S.end());
+	return S;
+}
+
+
+bool sortbysec(pair<int ,int> &a , pair<int , int> &b)
+{
+        return a.ss > b.ss;
+    
+}
+
+all_of()
+
+This function operates on whole range of array elements and can save time to run a loop to check each elements 
+one by one. It checks for a given property on every element and returns true when each element in range satisfies 
+specified property, else returns false
+
+    // Checking if all elements are positive 
+    all_of(ar, ar+6, [](int x) { return x>0; })? 
+          cout << "All are positive elements" : 
+          cout << "All are not positive elements"; 
+
+any_of()
+
+This function checks for a given range if there’s even one element satisfying a given property mentioned in function. 
+Returns true if at least one element satisfies the property else returns false.
+
+    // Checking if any element is negative 
+    any_of(ar, ar+6, [](int x){ return x<0; })? 
+          cout << "There exists a negative element" : 
+          cout << "All are positive elements";
+
+none_of()
+
+This function returns true if none of elements satisfies the given condition else returns false.
+
+ // Checking if no element is negative 
+    none_of(ar, ar+6, [](int x){ return x<0; })? 
+          cout << "No negative elements" : 
+          cout << "There are negative elements"; 
+
+copy_n()
+
+copy_n() copies one array elements to new array. This type of copy creates a deep copy of array. This function takes 
+3 arguments, source array name, size of array and the target array name.
+
+ // Using copy_n() to copy contents 
+    copy_n(ar(source), 6, ar1(target)); 
+
+iota()
+
+This function is used to assign continuous values to array. This function accepts 3 arguments, the array name, size, 
+and the starting number.
+
+   iota(ar, ar+6, 20);  // 20 21 22 23 24 25
+
+// check the array is sorted or not 
+is_sorted(all(v))
+
+         ans += a.end() - lb(all(a) , pll({i.ss , -1}));    // lower bound pair finding second trick among all first therefore taking
+         second as -1
+
+// C++ program to demonstrate the use of std::unique 
+#include <iostream> 
+#include <vector> 
+#include <algorithm> 
+using namespace std; 
+int main() 
+{ 
+	vector<int> v = { 1, 1, 3, 3, 3, 10, 1, 3, 3, 7, 7, 8 }, i; 
+
+	vector<int>::iterator ip; 
+
+	// Using std::unique 
+	ip = std::unique(v.begin(), v.begin() + 12); 
+	// Now v becomes {1 3 10 1 3 7 8 * * * * *} 
+	// * means undefined 
+
+	// Resizing the vector so as to remove the undefined terms 
+	v.resize(std::distance(v.begin(), ip)); 
+
+	// Displaying the vector after applying std::unique 
+	for (ip = v.begin(); ip != v.end(); ++ip) { 
+		cout << *ip << " "; 
+	} 
+
+	return 0; 
+} 
+
+std::count() in C++ STL
+Last Updated: 22-09-2019
+std::count() returns number of occurrences of an element in a given range. Returns the number of elements in the range [first,last) that compare equal to val.
+
+// Returns count of occurrences of value in
+// range [begin, end]
+int count(Iterator first, Iterator last, T &val)
+
+first, last : Input iterators to the initial and final positions of the sequence of elements.
+val : Value to match
+
+
+std::stoi
+----------
+int stoi (const string&  str, size_t* idx = 0, int base = 10);
+int stoi (const wstring& str, size_t* idx = 0, int base = 10);
+
+Convert string to integer
+---------------------------
+Parses str interpreting its content as an integral number of the specified base, which is returned as an int value.
+
+If idx is not a null pointer, the function also sets the value of idx to the position of the first character in str after the number.
+
+The function uses strtol (or wcstol) to perform the conversion (see strtol for more details on the process).
+
+
+Parameters
+--------------
+str
+      String object with the representation of an integral number.
+idx
+      Pointer to an object of type size_t, whose value is set by the function to position of the next character in str after the numerical value.
+      This parameter can also be a null pointer, in which case it is not used.
+base
+      Numerical base (radix) that determines the valid characters and their interpretation.
+      If this is 0, the base used is determined by the format in the sequence (see strtol for details). Notice that by default this argument is 10, not 0.

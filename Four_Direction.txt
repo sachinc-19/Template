@@ -1,0 +1,78 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define fon(i,n) for(int i=0;i<n;i++)
+#define fo(i,n) for(int i=1;i<=n;i++)
+#define pb push_back
+#define mp make_pair
+#define ff first
+#define ss second
+#define pii pair<int,int>
+#define pll pair<ll ,ll>
+#define vii vector<int>
+#define vll vector<ll>
+#define vvll vector<vll>
+#define vpii vector<pii>
+#define vpll vector<pll>
+#define bs binary_search
+#define lb lower_bound
+#define ub upper_bound
+#define M (1000*1000*1000+7)
+#define test ll T; cin>>T; while(T--)
+#define all(z) z.begin() , z.end()
+#define allr(z) z.rbegin() , z.rend()
+// =============================================
+
+int ans = INT_MAX;
+int n ,m;
+int main()
+{
+   ios_base::sync_with_stdio(false);
+   cin.tie(NULL);
+   test
+   {
+      cin >> n >> m; int a[n+1][m+1]; char c;
+    ans = INT_MAX;
+      fo(i ,n){
+          fo(j , m){ cin >> c;
+          a[i][j] = (c=='*'? 1 : 0);
+          }
+      }
+
+     int rf[n+2][m+2];
+     int rb[n+2][m+2];
+     int cf[n+2][m+2];
+     int cb[n+2][m+2];
+     memset(rb , 0 , sizeof(rb));
+     memset(rf , 0 , sizeof(rf));
+     memset(cb , 0 , sizeof(cb));
+     memset(cf , 0 , sizeof(cf));
+
+     for(int i = 1 ; i <= n ; i++)
+         for(int j = 1 ; j <= m ; j++)
+             rb[i][j] = (a[i][j] + rb[i][j-1]);
+     for(int i = 1 ; i <= n ; i++)
+         for(int j = m ; j >=1  ; j--)
+             rf[i][j] = (a[i][j] + rf[i][j+1]);
+         for(int j = 1 ; j <= m ; j++)
+     for(int i = 1 ; i <= n ; i++)
+             cb[i][j] = (a[i][j] + cb[i-1][j]);
+         for(int j = 1 ; j <= m ; j++)
+     for(int i = n ; i >= 1 ; i--)
+             cf[i][j] = (a[i][j] + cf[i+1][j]);
+
+     for(int i = 1 ; i <= n ; i++){
+         for(int j = 1 ; j <= m ; j++){
+            int sub = a[i][j];
+             sub += rb[i][j-1];
+             sub += rf[i][j+1];
+             sub += cb[i-1][j];
+             sub += cf[i+1][j];
+            ans = min(ans , n+m-sub-1);
+         }
+     }
+cout << ans << endl;
+     
+           
+   }
+}    

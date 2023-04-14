@@ -1,0 +1,31 @@
+const int N = 6e5+10;
+const int K = 3e5+5;
+
+int parent[N] , siz[N];
+
+int findParent(int i) {
+    if(parent[parent[i]] != parent[i]) {
+        parent[i] = findParent(parent[i]);
+    } 
+    return parent[i];
+}
+
+void unionNodes(int a , int b) {
+    int parent_a = findParent(a) , parent_b = findParent(b);
+    if(parent_a != parent_b) {
+        if(siz[parent_a] >= siz[parent_b]) {
+            swap(parent_a , parent_b);
+        }
+        siz[parent_b] += siz[parent_a];
+        parent[parent_a] = parent_b;
+    }
+}
+
+void cleardsu(int n) {
+    fon(i , n+1) {
+        parent[i] = i;
+        siz[i] = 1;
+        parent[i+K] = i+K;
+        siz[i+K] = 1;
+    }
+}

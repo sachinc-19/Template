@@ -1,0 +1,1 @@
+Select any element Aij and assign it with new value Aij⊕1. In other words, the value of (Aij+1)mod2 will have to be written into element Aij.

@@ -1,0 +1,277 @@
+************************// lucifer number  ************************//
+
+int prime[60];
+int dp[12][2][60][60];
+void get_prime()
+{
+    // memset(prime , 1 , sizeof(prime));
+    fill(prime , prime+60 , 1);
+    prime[0] = prime[1] = 0;
+
+    for(int i = 2 ; i*i < 60 ; i++)
+    {
+        if(prime[i])
+        for(int j = i*i ; j < 60 ; j += i)
+        {
+            prime[j] = 0;
+        }
+    } 
+}
+
+int is_prime(int even , int odd , int n)
+{
+    if(n%2==1)
+    swap(even, odd);
+
+    int diff = even - odd;
+    
+    if(diff > 0)
+     return prime[diff];
+    else
+     return 0; 
+}
+
+int sum(string &s , int p = 0, int even = 0 , int odd = 0 , int e = 1)
+{
+    if(p>=s.size())
+    {
+      return is_prime(even , odd , s.size()); 
+    }
+    if(dp[p][e][odd][even]!=-1)
+      return dp[p][e][odd][even];
+
+    int res = 0 , ulim = 9;
+    if(e)
+        ulim = s[p]-'0';
+
+    for(int i = 0 ; i <= ulim ; i++)
+    {
+        int od = odd , ev = even;
+        if(p&1)
+         od += i;
+        else
+         ev += i;
+        
+        if(e && i == s[p]-'0')
+          res += sum(s , p+1 , ev , od , 1);
+        else
+        {
+            res += sum(s , p+1 , ev , od , 0);
+        }
+    }
+    return dp[p][e][odd][even] = res;
+}
+int main()
+{
+   ios_base::sync_with_stdio(false);
+   cin.tie(NULL);
+
+   get_prime();
+   test
+   {
+      memset(dp , -1 , sizeof(dp));
+
+      string a , b;
+      cin >> a >> b;
+      
+      int temp = stoi(a) ;
+      a = to_string(temp-1);
+
+      int ans1 = sum(b);
+      memset(dp , -1 , sizeof(dp));
+
+      int ans2 = sum(a);
+
+      cout << ans1-ans2 << endl;
+
+   }
+}
+
+
+***********************// digit sum //*********************
+ll dp[10][2][100000];
+
+ll go(string &s , ll p = 0 , ll sum = 0 , ll e = 1)
+{
+    if(p>=s.size())
+      return sum; 
+    else if(dp[p][e][sum]!=-1)
+      return dp[p][e][sum];
+
+    ll res = 0 , ulim = 9;
+
+    if(e)
+        ulim = s[p]-'0';
+
+    for(int i = 0 ; i <= ulim ; i++)
+    { 
+        if(e && i == s[p]-'0')
+          res += go(s , p+1 , sum+i , 1);
+        else
+        {
+            res += go(s , p+1 , sum+i , 0);
+        }
+    }
+
+    return dp[p][e][sum] = res;
+}
+int main()
+{
+   ios_base::sync_with_stdio(false);
+   cin.tie(NULL);
+
+   while(1)
+   {
+      string a , b;
+      cin >> a >> b;
+
+      ll temp = stoll(a) ;
+
+      if(temp==-1)
+       return 0;
+      memset(dp , -1 , sizeof(dp));
+
+      a = to_string(temp-1);
+
+      ll ans1 = go(b);
+      memset(dp , -1 , sizeof(dp));
+
+      ll ans2 = go(a);
+
+      cout << ans1-ans2 << endl;
+
+   }
+}
+
+////////******************** Beautiful year *********************///
+
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define fon(i,n) for(int i=0;i<n;i++)
+#define fo(i,n) for(int i=1;i<=n;i++)
+#define pb push_back
+#define mp make_pair
+#define ff first
+#define ss second
+#define pii pair<int,int>
+#define pll pair<ll ,ll>
+#define vii vector<int>
+#define vll vector<ll>
+#define vvll vector<vll>
+#define vpii vector<pii>
+#define vpll vector<pll>
+#define bs binary_search
+#define lb lower_bound
+#define ub upper_bound
+#define M (1000*1000*1000+7)
+#define test ll T; cin>>T; while(T--)
+#define all(z) z.begin() , z.end()
+#define allr(z) z.rbegin() , z.rend()
+// =============================================
+
+string ans ;
+bool solve(string s , string op , int vis[] , bool f , int j)
+{
+    if(j == s.size())
+     {
+         ans = op;
+         return true;
+     }
+
+    int l_lim = 0;
+    if(f)
+     l_lim = s[j] - '0';
+   
+    for(int i = l_lim ; i <= 9 ; i++)
+    {
+        if(vis[i]) continue;
+
+        op += to_string(i);
+
+        vis[i] = 1;
+        bool t = false;
+        if(f && i==l_lim)
+        t = solve(s , op , vis , f , j+1);
+        else
+        t = solve(s , op , vis , 0 , j+1);
+
+        if(t) return true;
+      vis[i] = 0;
+      op.pop_back();
+    }
+  return false;
+}
+int main()
+{
+   ios_base::sync_with_stdio(false);
+   cin.tie(NULL);
+   
+   int n ;
+   cin >> n;
+   n++;
+   string s = to_string(n);
+   int vis[10] = {0};
+   solve(s , "" , vis , 1 , 0);
+   cout << ans << endl;
+}
+
+
+// ************** sequence of integers is good if each number divides next number in the sequence(without a rem)
+// find good sequences of length k // eg n=4 , k= 3   //1 4 4
+                                                      //2 4 4
+
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define fon(i,n) for(int i=0;i<n;i++)
+#define fo(i,n) for(int i=1;i<=n;i++)
+#define pb push_back
+#define mp make_pair
+#define ff first
+#define ss second
+#define pii pair<int,int>
+#define pll pair<ll ,ll>
+#define vii vector<int>
+#define vll vector<ll>
+#define vvll vector<vll>
+#define vpii vector<pii>
+#define vpll vector<pll>
+#define bs binary_search
+#define lb lower_bound
+#define ub upper_bound
+#define M (1000*1000*1000+7)
+#define test ll T; cin>>T; while(T--)
+#define all(z) z.begin() , z.end()
+#define allr(z) z.rbegin() , z.rend()
+#define mem(arr,x) memset(arr,x,sizeof(arr))
+// =============================================
+
+ll n , k;
+ll dp[2010][2010];
+
+ll solve(int start , int n , int k)
+{
+    if(k<=0)    // target => to fill all the k places with the given (constraints) => each number divides next no
+      return 1; // target completed thus add 1 to the total no of such sequence(this call contriution to the overall ans)
+
+    if(dp[start][k] != -1)
+     return dp[start][k];
+
+    ll ans = 0;
+    for(ll i = start ; i <= n ; i += start)  // set of choices for each place 
+        ans += solve(i , n , k-1) % M;   // fixing(decision) i as the current place now place decresed by one(input) 
+                                            // now call fun with new set of choices
+    return dp[start][k] = ans % M;
+
+}
+int main()
+{
+   ios_base::sync_with_stdio(false);
+   cin.tie(NULL);
+   
+   cin >> n >> k;
+   mem(dp , -1);
+   cout << solve(1 , n , k) << endl;
+   
+}
