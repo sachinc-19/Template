@@ -29,3 +29,147 @@ void cleardsu(int n) {
         siz[i+K] = 1;
     }
 }
+
+
+//ΗΔɌΞ ƘɌI⟆ΗŊΔ!!
+#include<bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+
+template <typename T> using prqueues = priority_queue<T,vector<T>,greater<T>>;
+template<typename Container, typename T = typename enable_if<!is_same<Container, string>::value, typename Container::value_type>::type> 
+istream& operator >> (istream &is, Container &v) { 
+    for(T &x : v) is >> x; return is;
+}
+template<typename Container, typename T = typename enable_if<!is_same<Container, string>::value, typename Container::value_type>::type> 
+ostream& operator << (ostream &os, const Container &v) { 
+    for (const T &x : v) os << x << " ";
+    return os << "\n";
+}
+
+#define uniq(v)     (v).erase(unique(all(v)),(v).end())
+#define all(v) (v).begin(),(v).end()
+#define ff first
+#define ss second
+
+
+template<typename T> 
+struct FenwickTree {
+    vector<T> bit;  // binary indexed tree
+    int n;
+ 
+    FenwickTree(int n) {
+        this->n = n;
+        bit.assign(n, T());
+    }
+ 
+    FenwickTree(vector<int> a) : FenwickTree(a.size()) {
+        for (size_t i = 0; i < a.size(); i++)
+            add(i, a[i]);
+    }
+ 
+    T sum(int r) {
+        auto ret = T();
+        for (; r >= 0; r = (r & (r + 1)) - 1)
+            ret += bit[r];
+        return ret;
+    }
+ 
+    // T sum(int l, int r) {
+    //     return sum(r) - sum(l - 1);
+    // }
+ 
+    void add(int idx, T delta) {
+        for (; idx < n; idx = idx | (idx + 1))
+            bit[idx] += delta;
+    }
+
+    T get(int i){
+        return sum(i) - (i?sum(i-1):0);
+    }
+};
+
+struct node {
+    ll x=0;
+    node &operator +=(node a) {
+        x = max(x , a.x);
+        return *this;
+    } 
+};
+
+
+void solve() {
+    ll n;cin >> n;
+    vector<vector<ll>> a(n);
+    vector<ll> v;
+
+
+
+    for(ll i = 0 ; i < n; ++ i) {
+        ll k;cin >> k;
+        for(ll j = 0; j < k; ++ j) {
+            ll x;cin >> x;
+            v.push_back(x); a[i].push_back(x);
+        }
+    }
+
+
+    sort(all(v));
+    uniq(v);
+    ll cnt = v.size() + 5;
+    vector<vector<ll>> vecs(cnt);
+    for(ll i = 0 ;i < n ;++i) {
+        for(auto &x : a[i]) {
+            x = lower_bound(all(v) , x) - v.begin() ;++x;
+        }
+
+        vector<ll> temp;
+        for(auto &x : a[i]) {
+            if(temp.empty() || temp.back() < x) {
+                temp.push_back(x);
+            }
+        }
+
+        a[i].swap(temp);
+        vecs[a[i].back()].push_back(i);
+    }
+
+    FenwickTree<node> dp(cnt + 5);
+    ll ans = 0;
+
+    for(int i = 0; i < cnt;++i) {
+        ll best = 0;
+        for(auto &ind : vecs[i]) {
+            // cout << a[ind] ;
+            for(int j = 0 ; j < a[ind].size(); ++j) {
+
+                best = max(best , dp.sum(a[ind][j] - 1).x + (ll)a[ind].size()-j );
+            } 
+        }
+        node g(best);
+        dp.add(i,g);
+        ans = max(ans,best);
+    }
+
+    cout << ans << "\n";
+
+
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);cout.tie(0);
+
+    int T = 1;
+    cin >> T;  
+    for(ll tt=1;tt<=T;tt++){
+        //cout << "Case #" << tt << ": "; 
+        solve();
+    }
+    return 0;
+}
+
+
+
+
